@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Surface palette — warm-tinted dark charcoal */
+  --color-base: #0c0f14;
+  --color-panel: #12151d;
+  --color-panel-2: #191d27;
+  --color-elevated: #21262f;
+  --color-hover: #262c37;
+
+  /* Strokes */
+  --color-stroke: #282e3a;
+  --color-stroke-2: #353c4c;
+
+  /* Text */
+  --color-ink: #e6e8ec;
+  --color-ink-dim: #98a0b0;
+  --color-ink-faint: #5c6271;
+
+  /* Accent — teal for data-flow identity */
+  --color-accent: #2dd4bf;
+  --color-accent-2: #5eead4;
+  --color-accent-dim: #134e4a;
+  --color-accent-soft: #0d3d39;
+
+  /* Semantic */
+  --color-amber: #f59e0b;
+  --color-success: #34d399;
+  --color-danger: #f87171;
+  --color-info: #60a5fa;
+  --color-violet: #a78bfa;
+
+  /* Type */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Base */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stroke-2) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-stroke-2);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #454d5e;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-base);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-offset: 0;
+}
+
+/* Inputs reset */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+/* Mono utility */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Transitions */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Syntax highlight helpers for URL */
+.url-scheme { color: #f87171; }
+.url-host { color: #f59e0b; }
+.url-path { color: #e6e8ec; }
+.url-param-key { color: #2dd4bf; }
+.url-param-val { color: #a78bfa; }
+.url-punct { color: #5c6271; }
