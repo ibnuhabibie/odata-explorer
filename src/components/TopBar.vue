@@ -1,46 +1,13 @@
 <script setup>
 import { useConnection } from '@/stores/connection.js'
-import { useMetadata } from '@/stores/metadata.js'
-import { fetchMetadata } from '@/utils/request.js'
+import { useConnect } from '@/composables/useConnect.js'
 import { computed } from 'vue'
 import ConnectionModal from './ConnectionModal.vue'
 
-const { state, getActive, setActive, addConnection, removeConnection, setStatus, openModal, closeModal } = useConnection()
-const metadata = useMetadata()
+const { state, getActive, setActive, removeConnection, setStatus, openModal, closeModal } = useConnection()
+const { connect, disconnect } = useConnect()
 
 const activeConn = computed(() => getActive())
-
-async function connect() {
-  const conn = activeConn.value
-  if (!conn || !conn.url) {
-    openModal('edit')
-    return
-  }
-
-  setStatus('connecting')
-  metadata.state.loading = true
-  metadata.state.error = null
-
-  try {
-    const result = await fetchMetadata(conn.url, headersObj(conn), conn.auth, null, conn.useProxy)
-    if (result.ok) {
-      metadata.load(result.data, `${conn.url.replace(/\/+$/, '')}/$metadata`)
-      setStatus('connected')
-    } else {
-      setStatus('error', result.error || `HTTP ${result.status}`)
-      metadata.state.error = result.error
-    }
-  } catch (err) {
-    setStatus('error', err.message)
-  } finally {
-    metadata.state.loading = false
-  }
-}
-
-function disconnect() {
-  metadata.clear()
-  setStatus('idle')
-}
 
 function saveAndConnect() {
   closeModal()
@@ -52,14 +19,6 @@ function handleDelete() {
     removeConnection(activeConn.value.id)
     closeModal()
   }
-}
-
-function headersObj(conn) {
-  const obj = {}
-  for (const h of conn.headers || []) {
-    if (h.key && h.value) obj[h.key] = h.value
-  }
-  return obj
 }
 
 const statusInfo = computed(() => {

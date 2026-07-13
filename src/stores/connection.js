@@ -36,6 +36,20 @@ function persist() {
 }
 
 load()
+
+// Seed default connection on first launch
+if (state.connections.length === 0) {
+  state.connections.push({
+    id: 'conn-demo',
+    name: 'OData Demo Service',
+    url: 'https://services.odata.org/V4/OData/OData.svc/',
+    useProxy: true,
+    headers: [],
+    auth: { type: 'none', token: '', header: 'X-API-Key' },
+  })
+  state.activeId = 'conn-demo'
+}
+
 watch(
   () => [state.connections, state.activeId],
   persist,

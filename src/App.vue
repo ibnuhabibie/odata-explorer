@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useConnection } from '@/stores/connection.js'
+import { useConnect } from '@/composables/useConnect.js'
 import { useMetadata } from '@/stores/metadata.js'
 import { useQuery } from '@/stores/query.js'
 import TopBar from '@/components/TopBar.vue'
@@ -14,6 +15,8 @@ import HistoryPanel from '@/components/HistoryPanel.vue'
 import SavedQueries from '@/components/SavedQueries.vue'
 
 const { state: connState, openModal, getActive } = useConnection()
+const { connect } = useConnect()
+const activeConn = computed(() => getActive())
 const { state: metaState } = useMetadata()
 const { state: queryState } = useQuery()
 
@@ -89,7 +92,7 @@ function createSampleConnection() {
       </aside>
 
       <!-- Main content area -->
-      <main class="w-[440px] shrink-0 flex flex-col overflow-hidden">
+      <main :class="['flex flex-col overflow-hidden', isConnected ? 'w-[440px] shrink-0' : 'flex-1']">
         <!-- Not connected state -->
         <div v-if="!isConnected && connState.connections.length > 0" class="flex-1 flex items-center justify-center p-8">
           <div class="text-center max-w-sm">
@@ -97,8 +100,15 @@ function createSampleConnection() {
               <circle cx="16" cy="16" r="6"/><path d="M16 12v8M12 16h8"/>
               <path d="M7 3 3 7l4 4M3 7h11"/>
             </svg>
-            <p class="text-sm text-ink-dim mb-1">Connect to an OData service</p>
-            <p class="text-xs text-ink-faint">Enter a service URL and click Connect to parse $metadata and browse entities.</p>
+            <p class="text-sm text-ink-dim mb-1">Connect to <span class="text-accent font-medium">{{ activeConn?.name || 'OData service' }}</span></p>
+            <p class="text-xs text-ink-faint mb-4 font-mono truncate">{{ activeConn?.url }}</p>
+            <button
+              @click="connect"
+              class="px-4 py-2 rounded-md text-sm font-medium bg-accent text-base hover:bg-accent-2 transition-colors"
+            >
+              Connect
+            </button>
+            <p class="text-[10px] text-ink-faint mt-3">or click the edit button to change the URL</p>
           </div>
         </div>
 
