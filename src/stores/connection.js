@@ -43,7 +43,7 @@ if (state.connections.length === 0) {
     id: 'conn-demo',
     name: 'OData Demo Service',
     url: 'https://services.odata.org/V4/OData/OData.svc/',
-    useProxy: true,
+    useProxy: false,
     headers: [],
     auth: { type: 'none', token: '', header: 'X-API-Key' },
   })

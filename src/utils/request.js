@@ -27,8 +27,9 @@ export async function executeRequest({ url, headers = {}, auth = null, signal = 
   }
 
   try {
-    // Route through built-in proxy to bypass CORS
-    const fetchUrl = useProxy
+    // Route through built-in proxy to bypass CORS — only works in dev
+    const useDevProxy = useProxy && import.meta.env.DEV
+    const fetchUrl = useDevProxy
       ? `/proxy?url=${encodeURIComponent(url)}`
       : url
 
