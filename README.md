@@ -4,10 +4,10 @@ A visual explorer for OData v4 services. Build queries visually, inspect respons
 
 ## Features
 
-- **Connection management** — service URL, custom headers, proxy URL (for CORS), and auth (Bearer, Basic, API Key)
+- **Connection management** — service URL, custom headers, auth (Bearer, Basic, API Key)
 - **$metadata parsing** — automatic entity set discovery and property browsing with type information
 - **Visual query builder** — `$select`, `$filter`, `$orderby`, `$expand`, `$top`, `$skip`, `$count`, `$search`
-- **Data grid** — paginated results with server-side querying
+- **Data grid** — paginated results, expandable rows with nested object/array tables
 - **JSON viewer** — syntax-highlighted, formatted, copyable
 - **Live URL** — every UI change reflected in the generated request URL in real time
 - **Copy as** — URL, cURL, Fetch, Axios
@@ -29,20 +29,35 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-Click **Try Sample** to connect to the TripPin OData v4 reference service.
+Click **Try Sample** to connect to the OData v4 reference service.
 
 ## Usage
 
-1. Enter your OData service URL in the top bar and click **Connect**
-2. Browse entity sets in the left sidebar (**Entities** tab)
-3. Click an entity set to load its properties and start building a query
-4. Configure `$select`, `$filter`, `$orderby`, `$expand`, and paging options
-5. Watch the live URL update as you build
-6. Click **Run** to execute and view results in the grid or JSON viewer
-7. Copy the URL or generate cURL/Fetch/Axios snippets
+1. Click **+** in the top bar to create a connection (or **Try Sample** on the welcome screen)
+2. Enter your OData service URL, enable **Bypass CORS** if needed
+3. Click **Save & Connect** to parse `$metadata`
+4. Browse entity sets in the left sidebar (**Entities** tab)
+5. Click an entity set to load its properties and start building a query
+6. Configure `$select`, `$filter`, `$orderby`, `$expand`, and paging options
+7. Click **Run** to execute and view results in the grid or JSON viewer
+8. Copy the URL or generate cURL/Fetch/Axios snippets
+
+## Deploy to GitHub Pages
+
+The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that builds and deploys automatically.
+
+1. Push the repo to GitHub
+2. Go to **Settings → Pages → Build and deployment → Source** and select **GitHub Actions**
+3. Push to `main` — the workflow builds and deploys to:
+
+   ```
+   https://<username>.github.io/<repo-name>/
+   ```
+
+The Vite `base` is set to `./` so assets use relative paths — works with any repo name.
 
 ## CORS
 
-Browser-based requests are blocked by CORS when the OData service doesn't send `Access-Control-Allow-Origin` headers. OData Explorer includes a **built-in dev proxy** that bypasses this entirely — just enable **Bypass CORS** in the Connection tab (on by default for new connections).
+Browser-based requests are blocked by CORS when the OData service doesn't send `Access-Control-Allow-Origin` headers. In dev (`npm run dev` / `npm run preview`), a **built-in proxy** bypasses this — just enable **Bypass CORS** in the connection settings.
 
-The proxy runs as a Vite middleware (`/proxy?url=<target>`) and works in both `npm run dev` and `npm run preview`. For production deployments, you'll need your own proxy server.
+On static deployments (GitHub Pages), the proxy is not available. The deployed app can only reach services that send proper CORS headers.

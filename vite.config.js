@@ -69,6 +69,7 @@ function corsProxy() {
 }
 
 export default defineConfig({
+  base: './',
   plugins: [vue(), tailwindcss(), corsProxy()],
   resolve: {
     alias: {
