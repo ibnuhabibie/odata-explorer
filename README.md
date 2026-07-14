@@ -56,8 +56,48 @@ The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) 
 
 The Vite `base` is set to `./` so assets use relative paths — works with any repo name.
 
-## CORS
+## CORS & Cloudflare Worker Proxy
 
-Browser-based requests are blocked by CORS when the OData service doesn't send `Access-Control-Allow-Origin` headers. In dev (`npm run dev` / `npm run preview`), a **built-in proxy** bypasses this — just enable **Bypass CORS** in the connection settings.
+Browser-based requests are blocked by CORS when the OData service doesn't send `Access-Control-Allow-Origin` headers. The app handles this in two ways:
 
-On static deployments (GitHub Pages), the proxy is not available. The deployed app can only reach services that send proper CORS headers.
+- **Dev** (`npm run dev` / `npm run preview`): built-in Vite proxy middleware — just enable **Bypass CORS** in connection settings.
+- **Production** (GitHub Pages): a **Cloudflare Worker** proxy (100k req/day free tier).
+
+### Deploy the Worker
+
+1. Install Wrangler:
+   ```bash
+   npm install -g wrangler
+   ```
+
+2. Login to Cloudflare:
+   ```bash   wrangler login
+   ````
+
+3. Deploy:
+   ```bash
+   npx wrangler deploy
+   ````
+
+   You'll get a URL like `https://odata-proxy.<your-subdomain>.workers.dev`
+
+4. Set the Worker URL as a GitHub secret:
+   - Go to **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `VITE_PROXY_URL`
+   - Value: `https://odata-proxy.<your-subdomain>.workers.dev`
+
+5. Push to `main` — the workflow uses the secret to bake the URL into the build.
+
+### Local development with the Worker
+
+Create `.env.production` (or set the env var):
+
+```bash
+VITE_PROXY_URL=https://odata-proxy.<your-subdomain>.workers.dev
+```
+
+Or test the Worker locally:
+
+```bash
+npm run dev:worker
+```

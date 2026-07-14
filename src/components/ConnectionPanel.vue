@@ -50,11 +50,10 @@ function removeHeader(i) {
         <input type="checkbox" v-model="conn.useProxy" class="accent-accent w-3.5 h-3.5" />
       </label>
       <div>
-        <div class="text-xs font-medium text-ink flex items-center gap-1.5">
+        <div class="text-xs font-medium text-ink">
           Bypass CORS
-          <span class="text-[9px] font-normal px-1 py-0.5 rounded bg-stroke text-ink-faint">dev only</span>
         </div>
-        <p class="text-[11px] text-ink-faint mt-0.5 leading-relaxed">Route requests through the built-in dev proxy. Only works with <code class="font-mono">npm run dev</code> — ignored on static deployments.</p>
+        <p class="text-[11px] text-ink-faint mt-0.5 leading-relaxed">Route requests through a CORS proxy. Uses built-in dev proxy locally, and a Cloudflare Worker in production.</p>
       </div>
     </div>
 

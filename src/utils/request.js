@@ -27,17 +27,32 @@ export async function executeRequest({ url, headers = {}, auth = null, signal = 
   }
 
   try {
-    // Route through built-in proxy to bypass CORS — only works in dev
-    const useDevProxy = useProxy && import.meta.env.DEV
-    const fetchUrl = useDevProxy
-      ? `/proxy?url=${encodeURIComponent(url)}`
+    // Prefer Cloudflare Worker if VITE_PROXY_URL is set (works in dev + prod)
+    // Fallback to Vite middleware in dev when no Worker URL configured
+    const proxyBase = import.meta.env.VITE_PROXY_URL
+      ? `${import.meta.env.VITE_PROXY_URL}?url=`
+      : import.meta.env.DEV
+        ? '/proxy?url='
+        : ''
+    const fetchUrl = useProxy
+      ? `${proxyBase}${encodeURIComponent(url)}`
       : url
 
-    const res = await fetch(fetchUrl, {
-      method: 'GET',
-      headers: finalHeaders,
-      signal,
-    })
+    let res
+    try {
+      res = await fetch(fetchUrl, {
+        method: 'GET',
+        headers: finalHeaders,
+        signal,
+      })
+    } catch (proxyErr) {
+      // If proxy fetch fails, fall back to direct request
+      if (useProxy) {
+        res = await fetch(url, { method: 'GET', headers: finalHeaders, signal })
+      } else {
+        throw proxyErr
+      }
+    }
 
     const text = await res.text()
     const elapsedMs = performance.now() - start
