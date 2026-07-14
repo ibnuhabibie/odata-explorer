@@ -53,7 +53,7 @@ function removeHeader(i) {
         <div class="text-xs font-medium text-ink">
           Bypass CORS
         </div>
-        <p class="text-[11px] text-ink-faint mt-0.5 leading-relaxed">Route requests through a CORS proxy. Uses built-in dev proxy locally, and a Cloudflare Worker in production.</p>
+        <p class="text-[11px] text-ink-faint mt-0.5 leading-relaxed">Route requests through a CORS proxy to bypass browser restrictions. Uses the Cloudflare Worker proxy when configured.</p>
       </div>
     </div>
 
